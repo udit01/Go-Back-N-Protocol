@@ -9,8 +9,6 @@ class DataFrame():
     MIN_PAYLOAD_SIZE = 512 - HEADER_SIZE 
     MAX_PAYLOAD_SIZE = 2024 - HEADER_SIZE
 
-
-
     pass
 
 class AckFrame():
