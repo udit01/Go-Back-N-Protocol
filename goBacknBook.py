@@ -61,6 +61,8 @@ class Node():
 	def __init__(self, nl, pl ):
 		self.networkLayer = nl
 		self.physicalLayer = pl
+		self.MAX_SEQ = 7
+
 
 	def start_timer(self, frame_nr):
 		pass
@@ -74,17 +76,15 @@ class Node():
 		packet = buffer[next_frame_to_send]
 		
 		s = frame(packet, frame_nr,
-				(frame_expected + MAX_SEQ) % (MAX_SEQ + 1) 
+				(frame_expected + self.MAX_SEQ) % (self.MAX_SEQ + 1) 
 				)
 				#/* piggyback ack */
 		
-		to_physical_layer(s) # /* transmit the frame */
-		start_timer(frame_nr) #/* start the timer running */
+		self.physicalLayer.to_physical_layer(s) # /* transmit the frame */
+		self.start_timer(frame_nr) #/* start the timer running */
 
 
 	def protocol5(self) :
-
-		MAX_SEQ = 7
 
 		next_frame_to_send = seq_nr(0)# /* MAX SEQ > 1 # used for outbound stream */ # /* next frame going out */
 		ack_expected = seq_nr(0)# /* oldest frame as yet unacknowledged */ # /* next ack expected inbound */
@@ -93,9 +93,9 @@ class Node():
 		
 		r = frame() # /* scratch variable */
 
-		# packet buffer[MAX_SEQ + 1] 
+		# packet buffer[self.MAX_SEQ + 1] 
 		# /* buffers for the outbound stream */
-		buffer = [packet() for i in range(MAX_SEQ+1)]
+		buffer = [packet() for i in range(self.MAX_SEQ+1)]
 		
 		i = seq_nr(0) 
 		# /* used to index into the buffer array */
@@ -181,9 +181,9 @@ class Node():
 			else : 
 				print("outside precribed event type ")
 
-			if (nbuffered.val < MAX_SEQ):
+			if (nbuffered.val < self.MAX_SEQ):
 				self.networkLayer.enable()
 			else:
 				self.networkLayer.disable()
 
-		## WHILE TRUE
+		## WHILE TRUE ENDS

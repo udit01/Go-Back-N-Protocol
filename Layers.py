@@ -13,7 +13,6 @@ class NetworkLayer():
         pass
 
 
-
 class PhysicalLayer():
     def __init__(self, ):
         pass
@@ -24,4 +23,6 @@ class PhysicalLayer():
     def get_packet(self,):
         pass
     def wait_for_event(self,):
+        pass
+    def to_physical_layer(self, ):
         pass
