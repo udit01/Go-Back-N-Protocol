@@ -3,94 +3,179 @@
 # protocols, the network layer is not assumed to have a new packet all the time. Instead,
 # the network layer causes a network layer ready event when there is a packet to send. */
 
-MAX_SEQ =  7
 # typedef enum {frame arrival, cksum err, timeout, network layer ready} event type #
 
-def between(a, b, c) 
+def between(a, b, c):
 	# /* Return true if a <= b < c circularly # false otherwise. */
-	if (((a <= b) && (b < c)) || ((c < a) && (a <= b)) || ((b < c) && (c < a))):
-		return(true)
+	if (((a <= b) and (b < c)) or ((c < a) and (a <= b)) or ((b < c) and (c < a))):
+		return True
 	else:
-		return(false)
+		return False
 
 class frame():
-
-	def __init__(self, info = 0, seq = 0, ack = 0):
+	def __init__(self, info = "", seq = 0, ack = 0):
+		
+		# Payload
 		self.info = info
+		# Sequence number in window
 		self.seq = seq
+		# Number of packet to send next
 		self.ack = ack
 
-
-
-def send_data(frame_nr, frame_expected, buffer[ ]): #seq_nr, seq_nr, packet are types
-	# /* Construct and send a data frame. */
-	s = frame(buffer[frame_nr],
-	 		frame_nr, 
-	 		(frame_expected + MAX_SEQ) % (MAX_SEQ + 1) #/* piggyback ack */
-	 		)
-	
-	to_physical_layer(s) # /* transmit the frame */
-	start_timer(frame_nr) #/* start the timer running */
 
 class seq_nr():
 	def __init__(self, num):
 		self.val = num
+	def inc():
+		self.val = self.val + 1
+	def dec():
+		self.val = self.val - 1
 
 class packet():
 	def __init__(self, ):
+		pass
+
+
+class event_type():
+	def __init__(self, inp):
+		# 0 -> Frame Arrival
+		# 1 -> Checksum Error
+		# 2 -> Timeout
+		# 3 -> Network Layer Ready
+		# 4 -> NULL
+		self.type = inp
+
+
+def enable_network_layer():
+	pass
+
+def disable_network_layer():
+	pass
+
+def to_network_layer():
+	pass
+
+def wait_for_event():
+	e = event_type(4)
+	return e
+
+def send_data(frame_expected, packet, ):
+	# /* Construct and send a data frame. */
+	s = frame(packet, frame_nr,
+			(frame_expected + MAX_SEQ) % (MAX_SEQ + 1) 
+			)
+			#/* piggyback ack */
+	
+	to_physical_layer(s) # /* transmit the frame */
+	start_timer(frame_nr) #/* start the timer running */
+
+	pass
+
+def stop_timer(number):
+	pass
 
 
 def protocol5() :
+
+	MAX_SEQ = 7
+
 	next_frame_to_send = seq_nr(0)# /* MAX SEQ > 1 # used for outbound stream */ # /* next frame going out */
 	ack_expected = seq_nr(0)# /* oldest frame as yet unacknowledged */ # /* next ack expected inbound */
 	frame_expected = seq_nr(0) # /* next frame expected on inbound stream */ # /* number of frame expected inbound */
 	nbuffered = seq_nr(0)  # /* number of output buffers currently in use */ # /* initially no packets are buffered */
-
+	
 	r = frame() # /* scratch variable */
 
-	packet buffer[MAX_SEQ + 1] # /* buffers for the outbound stream */
-	seq_nr i # /* used to index into the buffer array */
-	event_type event #
-	enable_network_layer() # /* allow network layer ready events */
+	# packet buffer[MAX_SEQ + 1] 
+	# /* buffers for the outbound stream */
+	buffer = [packet() for i in range(MAX_SEQ+1)]
+	
+	i = seq_nr(0) # /* used to index into the buffer array */
+	
+	
+	enable_network_layer()
+	 # /* allow network layer ready events */
+
+
+	# Why is this a while truw with break at each seq ?
 
 	
-	
-	while (True) {
-		wait_for_event(&event) # /* four possibilities: see event type above */
-		switch(event) {
-			case network_layer_ready: /* the network layer has a packet to send */
-				/* Accept, save, and transmit a new frame. */
-				from network layer(&buffer[next frame to send]) # /* fetch new packet */
-				nbuffered = nbuffered + 1 # /* expand the sender’s window */
-				send data(next frame to send, frame expected, buffer) #/* transmit the frame */
-				inc(next frame to send) # /* advance sender’s upper window edge */
+	while (True):
+		event = wait_for_event() 
+		# /* four possibilities: see event type above */
+		
+		n = event.type
+		
+		# Network layer ready
+		if n == 0 :
+			#  /* the network layer has a packet to send */
+			# /* Accept, save, and transmit a new frame. */
+			
+			# /* fetch new packet */
+			buffer[next_frame_to_send.val] = get_packet_from_network layer() 
+			# packet = get_packet_from_network layer() 
+			
+			# /* expand the sender’s window */
+			nbuffered.inc()
+			
+			 #/* transmit the frame */
+			send_data(frame_expected.val, buffer[next_frame_to_send.val])
+			
+			# /* advance sender’s upper window edge */
+			next_frame_to_send.inc()
+
+			break 
+
+		else if n == 1 :
+			# /* a data or control frame has arrived */
+			
+			fr = get_packet_from_physical_layer()
+			# /* get incoming frame from physical layer */
+			if (fr.seq == frame_expected.val) :
+				# /* Frames are accepted only in order. */
+
+				to_network_layer(fr.info) 
+				# /* pass packet to network layer */
+				
+				# /* advance lower edge of receiver’s window */
+				frame_expected.inc()
+				
+				# /* Ack n implies n − 1, n − 2, etc. Check for this. */
+				
+				while (between(ack expected, r.ack, next frame to send))
+				# /* Handle piggybacked ack. */
+				# nbuffered = nbuffered − 1 # /* one frame fewer buffered */
+				nbuffered.dec()
+				  # /* one frame fewer buffered */
+				
+				stop_timer(ack_expected.val) # /* frame arrived intact # stop timer */
+				
+				# /* contract sender’s window */
+				ack_expected.inc()
+				
 				break #
-			case frame arrival: /* a data or control frame has arrived */
-				from physical layer(&r) # /* get incoming frame from physical layer */
-				if (r.seq == frame expected) {
-				/* Frames are accepted only in order. */
-				to network layer(&r.info) # /* pass packet to network layer */
-				inc(frame expected) # /* advance lower edge of receiver’s window */
-				}
-				/* Ack n implies n − 1, n − 2, etc. Check for this. */
-				while (between(ack expected, r.ack, next frame to send)) {
-				/* Handle piggybacked ack. */
-				nbuffered = nbuffered − 1 # /* one frame fewer buffered */
-				stop timer(ack expected) # /* frame arrived intact # stop timer */
-				inc(ack expected) # /* contract sender’s window */
-				}
-				break #
-			case cksum err: break # /* just ignore bad frames */
-			case timeout: /* trouble # retransmit all outstanding frames */
-				next frame to send = ack expected # /* start retransmitting here */
-				for (i = 1 # i <= nbuffered # i++) {
-				send data(next frame to send, frame expected, buffer) #/* resend frame */
-				inc(next frame to send) # /* prepare to send the next one */
-				}
-		}
-		if (nbuffered < MAX SEQ)
-			enable network layer() #
-		else
-			disable network layer() #
-	}
-}
+
+		# CheckSum error
+		else if n == 2 : 
+			# /* just ignore bad frames */
+			break
+
+		# Timeout
+		else if n == 3 :
+			# /* trouble  retransmit all outstanding frames */
+			next_frame_to_send.val = ack_expected.val
+			
+			# /* start retransmitting here */
+			for i in range(1, nbuffered.val + 1):
+				
+				send_data(frame_expected.val, buffer[next_frame_to_send])
+				#/* resend frame */
+				next_frame_to_send.inc()
+				# /* prepare to send the next one */
+		else : 
+			print("outside precribed event type ")
+
+		if (nbuffered.val < MAX_SEQ):
+			enable_network_layer()
+		else:
+			disable_network_layer()
