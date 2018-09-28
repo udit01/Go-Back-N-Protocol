@@ -50,12 +50,6 @@ class event_type():
 
 
 
-def disable_network_layer():
-	pass
-
-def to_network_layer():
-	pass
-
 def wait_for_event():
 	e = event_type(4)
 	return e
@@ -149,7 +143,7 @@ class Node():
 				if (fr.seq == frame_expected.val) :
 					# /* Frames are accepted only in order. */
 
-					to_network_layer(fr.info) 
+					self.network_layer.to_network_layer(fr.info) 
 					# /* pass packet to network layer */
 					
 					# /* advance lower edge of receiver’s window */
@@ -188,8 +182,8 @@ class Node():
 				print("outside precribed event type ")
 
 			if (nbuffered.val < MAX_SEQ):
-				enable_network_layer()
+				self.networkLayer.enable()
 			else:
-				disable_network_layer()
+				self.networkLayer.disable()
 
 		## WHILE TRUE
