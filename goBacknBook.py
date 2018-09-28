@@ -141,8 +141,6 @@ class Node():
 				# /* advance sender’s upper window edge */
 				next_frame_to_send.inc()
 
-				break 
-
 			else if n == 1 :
 				# /* a data or control frame has arrived */
 				
@@ -159,23 +157,20 @@ class Node():
 					
 					# /* Ack n implies n − 1, n − 2, etc. Check for this. */
 					
-					while (between(ack expected, r.ack, next frame to send))
-					# /* Handle piggybacked ack. */
-					# nbuffered = nbuffered − 1 # /* one frame fewer buffered */
-					nbuffered.dec()
-					# /* one frame fewer buffered */
-					
-					stop_timer(ack_expected.val) # /* frame arrived intact # stop timer */
-					
-					# /* contract sender’s window */
-					ack_expected.inc()
-					
-					break #
+					while (between(ack_expected.val, fr.ack, next_frame_to_send.val)):
+						# /* Handle piggybacked ack. */
+						# nbuffered = nbuffered − 1 # /* one frame fewer buffered */
+						nbuffered.dec()
+						# /* one frame fewer buffered */
+						
+						stop_timer(ack_expected.val) # /* frame arrived intact # stop timer */
+						
+						# /* contract sender’s window */
+						ack_expected.inc()
 
 			# CheckSum error
 			else if n == 2 : 
 				# /* just ignore bad frames */
-				break
 
 			# Timeout
 			else if n == 3 :
@@ -185,7 +180,7 @@ class Node():
 				# /* start retransmitting here */
 				for i in range(1, nbuffered.val + 1):
 					
-					send_data(next_frame_to_send, frame_expected.val, buffer)
+					self.send_data(next_frame_to_send, frame_expected.val, buffer)
 					#/* resend frame */
 					next_frame_to_send.inc()
 					# /* prepare to send the next one */
@@ -196,3 +191,5 @@ class Node():
 				enable_network_layer()
 			else:
 				disable_network_layer()
+
+		## WHILE TRUE
