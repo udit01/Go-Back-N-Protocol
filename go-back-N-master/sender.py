@@ -2,7 +2,7 @@
 import packet
 import socket
 import sys
-import _thread
+import thread as _thread
 import time
 import udt
 

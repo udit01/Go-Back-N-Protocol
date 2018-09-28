@@ -14,12 +14,15 @@ def between(a, b, c)
 		return(false)
 
 class frame():
-	def __init__(self, info, seq, ack):
+
+	def __init__(self, info = 0, seq = 0, ack = 0):
 		self.info = info
 		self.seq = seq
 		self.ack = ack
 
-def send data(frame_nr, frame_expected, buffer[ ]): #seq_nr, seq_nr, packet are types
+
+
+def send_data(frame_nr, frame_expected, buffer[ ]): #seq_nr, seq_nr, packet are types
 	# /* Construct and send a data frame. */
 	s = frame(buffer[frame_nr],
 	 		frame_nr, 
@@ -29,22 +32,28 @@ def send data(frame_nr, frame_expected, buffer[ ]): #seq_nr, seq_nr, packet are 
 	to_physical_layer(s) # /* transmit the frame */
 	start_timer(frame_nr) #/* start the timer running */
 
+class seq_nr():
+	def __init__(self, num):
+		self.val = num
+
+class packet():
+	def __init__(self, ):
 
 
 def protocol5() :
-	seq_nr next_frame_to_send # /* MAX SEQ > 1 # used for outbound stream */
-	seq_nr ack_expected # /* oldest frame as yet unacknowledged */
-	seq_nr frame_expected # /* next frame expected on inbound stream */
-	frame r # /* scratch variable */
+	next_frame_to_send = seq_nr(0)# /* MAX SEQ > 1 # used for outbound stream */ # /* next frame going out */
+	ack_expected = seq_nr(0)# /* oldest frame as yet unacknowledged */ # /* next ack expected inbound */
+	frame_expected = seq_nr(0) # /* next frame expected on inbound stream */ # /* number of frame expected inbound */
+	nbuffered = seq_nr(0)  # /* number of output buffers currently in use */ # /* initially no packets are buffered */
+
+	r = frame() # /* scratch variable */
+
 	packet buffer[MAX_SEQ + 1] # /* buffers for the outbound stream */
-	seq_nr nbuffered # /* number of output buffers currently in use */
 	seq_nr i # /* used to index into the buffer array */
 	event_type event #
 	enable_network_layer() # /* allow network layer ready events */
-	ack_expected = 0 # /* next ack expected inbound */
-	next_frame_to_send = 0 # /* next frame going out */
-	frame_expected = 0 # /* number of frame expected inbound */
-	nbuffered = 0 # /* initially no packets are buffered */
+
+	
 	
 	while (True) {
 		wait_for_event(&event) # /* four possibilities: see event type above */
