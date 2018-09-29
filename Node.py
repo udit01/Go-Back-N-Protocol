@@ -36,9 +36,9 @@ class event_type():
 
 
 
-def wait_for_event():
-	e = event_type(4)
-	return e
+# def wait_for_event():
+# 	e = event_type(4)
+# 	return e
 
 def stop_timer(number):
 	pass
@@ -102,7 +102,8 @@ class Node():
 			
 			n = event.type
 			
-			# Network layer ready
+			# netowrk  layer ready
+			# netowrk  layer (Should be?) ready
 			if n == 0 :
 				#  /* the network layer has a packet to send */
 				# /* Accept, save, and transmit a new frame. */
