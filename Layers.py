@@ -1,10 +1,12 @@
 from Host import *
 from Node import *
+import time
 
 
 class Packet():
 	def __init__(self, info=""):
         self.__init__(info, 0)
+
     def __init__(self, info="", num=0):
         self.info = info
         self.type = num
@@ -84,7 +86,10 @@ class NetworkLayer():
 
 class PhysicalLayer():
     def __init__(self, ip, port):
+
+        self.buf = []
         s = socket.socket()
+        self.max_wait = 10
         
         try : 
             s.bind((ip, port))
@@ -96,24 +101,49 @@ class PhysicalLayer():
             self.sock = s
             print("Client made on", ip, port)
         
-        self.sendingThread = threading.Thread(target=self.send, args=("Physical Layer's Sending thread"))
+        # self.sendingThread = threading.Thread(target=self.send, args=("Physical Layer's Sending thread"))
         self.recThread = threading.Thread(target=self.recv, args=("Physical Layer's Receiving thread"))
 
-    def send(self, name):
+    def close(self):
+
+
+    # def wait_for_event():
+
+    #     self.start()
+    #     if self.event == 1 :
+    #         self.event = 5 # NO pacekt
+    #         return  1
+    #     else :
+    #         return 5
+
+    def start(self):
+        # self.sendingThread.start()
+        self.recThread.start()
+
+    def send(self, frame):
         
-        # while True:
-        #     data = raw_input("-> ")
-        #     print "sending: " + str(data)
-        #     sock.send(data)
-        # sock.close()
+        print ("Sending: " + str(frame))
+        self.sock.send(frame)
 
     def recv(self, name):
-    #      while True:
-    #     data = sock.recv(1024)     #Buffer we want to receive is max of 1024 bytes 
-    #     if not data:
-    #         break
-    #     print "from connected user: " + str(data)
-    # sock.close()
+        time_initial = time.time()
+        time_final = time.time()
+        time_elapsed = time_final - time_initial
+        
+        while (time_elapsed < self.max_wait):
+            data = sock.recv(1024)     #Buffer we want to receive is max of 1024 bytes 
+            if not data:
+                self.event = 5
+                break
+            else : 
+                self.event = 1
+                self.buf.append(data)
+            time_final = time.time()
+            time_elapsed = time_final - time_initial
+        self.event = 4
+        #Close the thread since timed out
+        
+
     
     def enable(self,):
         pass

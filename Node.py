@@ -45,12 +45,10 @@ def stop_timer(number):
 
 class Node():
 	def __init__(self, ip="127.0.0.1", port="3000", windowSize=7, infilepath, outfilepath ):
-		self.networkLayer = NetworkLayer(infilepath, outfilepath)
 		self.physicalLayer = PhysicalLayer(ip, port)
+		self.networkLayer = NetworkLayer(infilepath, outfilepath)
 		self.MAX_SEQ = windowSize
-		
 		# Starts timer etc
-
 		
 		self.protocol5()
 
@@ -70,7 +68,7 @@ class Node():
 				)
 				#/* piggyback ack */
 		
-		self.physicalLayer.to_physical_layer(s) # /* transmit the frame */
+		self.physicalLayer.send(s) # /* transmit the frame */
 		self.start_timer(frame_nr) #/* start the timer running */
 
 
@@ -95,16 +93,23 @@ class Node():
 
 
 		# Why is this a while truw with break at each seq ?
+		self.physicalLayer.start()
 
 
 		while (True):
 			
 			# Event is a number from 0 to 3
-			event = self.physicalLayer.wait_for_event()
+			
+			event_netw = self.networkLayer.event
+			event_phys = self.physicalLayer.event
+
 			# event = wait_for_event() 
 			# /* four possibilities: see event type above */
 			
-			n = event
+			if event_phys < 4:
+				n = event_phys
+			else:
+				n = event_netw
 			
 			# netowrk  layer ready
 			# netowrk  layer (Should be?) ready
@@ -128,7 +133,7 @@ class Node():
 			else if n == 1 :
 				# /* a data or control frame has arrived */
 				
-				fr = get_packet_from_physical_layer()
+				fr = self.physicalLayer.buf[-1]
 				# /* get incoming frame from physical layer */
 				if (fr.seq == frame_expected.val) :
 					# /* Frames are accepted only in order. */
@@ -163,6 +168,8 @@ class Node():
 
 			# Timeout
 			else if n == 3 :
+				#Starting receiver again
+				self.physicalLayer.start()
 				# /* trouble  retransmit all outstanding frames */
 				next_frame_to_send.val = ack_expected.val
 				
