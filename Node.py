@@ -133,7 +133,8 @@ class Node():
 					
 					if error_code == 1 :
 						# Time to end transmission 
-						
+						pass
+
 					# /* pass packet to network layer */
 					
 					# /* advance lower edge of receiver’s window */
