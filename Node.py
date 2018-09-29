@@ -15,16 +15,6 @@ def between(a, b, c):
 	else:
 		return False
 
-class frame():
-	def __init__(self, info = "", seq = 0, ack = 0):
-		
-		# Payload
-		self.info = info
-		# Sequence number in window
-		self.seq = seq
-		# Number of packet to send next
-		self.ack = ack
-
 
 class seq_nr():
 	def __init__(self, num):
@@ -33,10 +23,6 @@ class seq_nr():
 		self.val = self.val + 1
 	def dec():
 		self.val = self.val - 1
-
-class packet():
-	def __init__(self, ):
-		pass
 
 
 class event_type():
@@ -75,7 +61,7 @@ class Node():
 		
 		packet = buffer[next_frame_to_send]
 		
-		s = frame(packet, frame_nr,
+		s = Frame(packet, frame_nr,
 				(frame_expected + self.MAX_SEQ) % (self.MAX_SEQ + 1) 
 				)
 				#/* piggyback ack */
@@ -91,7 +77,7 @@ class Node():
 		frame_expected = seq_nr(0) # /* next frame expected on inbound stream */ # /* number of frame expected inbound */
 		nbuffered = seq_nr(0)  # /* number of output buffers currently in use */ # /* initially no packets are buffered */
 		
-		r = frame() # /* scratch variable */
+		r = Frame() # /* scratch variable */
 
 		# packet buffer[self.MAX_SEQ + 1] 
 		# /* buffers for the outbound stream */
@@ -123,7 +109,7 @@ class Node():
 				# /* Accept, save, and transmit a new frame. */
 				
 				# /* fetch new packet */
-				buffer[next_frame_to_send.val] = get_packet_from_network layer() 
+				buffer[next_frame_to_send.val] = self.networkLayer.get_packet() 
 				# packet = get_packet_from_network layer() 
 				
 				# /* expand the sender’s window */
