@@ -38,7 +38,6 @@ class Host(Thread):
 #                                            -m <sequence_number_bits> \
 #                                            -t <timeout> \
 #                                            -w <www>')
-
 #     parser.add_argument("-f", "--filename", type=str, default="index.html",
 #                         help="File to be received, default: index.html")
 #     parser.add_argument("-a", "--sender_ip", type=str, default="127.0.0.1",
@@ -70,10 +69,8 @@ if __name__ == "__main__":
                                      prog='python \
                                            ClientApp.py \
                                            -f <filename> \
-                                           -a <sender_ip> \
-                                           -b <sender_port> \
-                                           -x <receiver_ip> \
-                                           -y <receiver_port> \
+                                           -i <ip> \
+                                           -p <port> \
                                            -m <sequence_number_bits> \
                                            -w <window_size> \
                                            -s <max_segment_size> \
@@ -83,14 +80,11 @@ if __name__ == "__main__":
 
     parser.add_argument("-f", "--filename", type=str, default="index.html",
                         help="File to be sent, default: index.html")
-    parser.add_argument("-a", "--sender_ip", type=str, default="127.0.0.1",
-                        help="Sender IP, default: 127.0.0.1")
-    parser.add_argument("-b", "--sender_port", type=int, default=8081,
-                        help="Sender Port, default: 8081")
-    parser.add_argument("-x", "--receiver_ip", type=str, default="127.0.0.1",
-                        help="Receiver IP, default: 127.0.0.1")
-    parser.add_argument("-y", "--receiver_port", type=int, default=8080,
-                        help="Receiver Port, default: 8080")
+    parser.add_argument("-i", "--ip", type=str, default="127.0.0.1",
+                        help="IP, default: 127.0.0.1")
+    parser.add_argument("-p", "--port", type=int, default=8081,
+                        help="Port, default: 8081")
+
     parser.add_argument("-m", "--sequence_number_bits", type=int, default=2,
                         help="Total number of bits used in sequence numbers, default: 2")
     parser.add_argument("-w", "--window_size", type=int, default=3,
