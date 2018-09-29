@@ -129,7 +129,11 @@ class Node():
 				if (fr.seq == frame_expected.val) :
 					# /* Frames are accepted only in order. */
 
-					self.network_layer.to_network_layer(fr.info) 
+					error_code =  self.network_layer.to_network_layer(fr) 
+					
+					if error_code == 1 :
+						# Time to end transmission 
+						
 					# /* pass packet to network layer */
 					
 					# /* advance lower edge of receiver’s window */
