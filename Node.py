@@ -44,11 +44,10 @@ def stop_timer(number):
 	pass
 
 class Node():
-	def __init__(self, nl, pl ):
-		self.networkLayer = nl
-		self.physicalLayer = pl
-		self.MAX_SEQ = 7
-
+	def __init__(self, ip="127.0.0.1", port="3000", windowSize=7, infilepath, outfilepath ):
+		self.networkLayer = NetworkLayer(infilepath, outfilepath)
+		self.physicalLayer = PhysicalLayer(ip, port)
+		self.MAX_SEQ = windowSize
 
 	def start_timer(self, frame_nr):
 		pass

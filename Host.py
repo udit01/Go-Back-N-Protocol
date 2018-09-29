@@ -4,6 +4,7 @@ import os
 import sys
 import socket
 from threading import Thread
+from Node import *
 
 class Host(Thread):
     """
@@ -12,16 +13,14 @@ class Host(Thread):
     """
 
     def __init__(self,
-                receiverIP="127.0.0.1",
-                receiverPort=8080,
+                ip="127.0.0.1",
+                port=3000,
                 sequenceNumberBits=2,
-                www=os.path.join(os.getcwd(), "data", "receiver")):
-        self.receiverIP = receiverIP
-        self.receiverPort = receiverPort
+                www=os.path.join(os.getcwd(), "data", "test.txt"),
+                outfilepath=os.path.join(os.getcwd(), "data", "recv.txt")):
         self.sequenceNumberBits = sequenceNumberBits
-        self.www = www
         # WWW is the data path
-
+        self.node = Node(ip, port, infilepath=www, outfilepath=outfilepath)
 
 
 
