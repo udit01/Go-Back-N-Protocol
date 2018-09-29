@@ -83,8 +83,38 @@ class NetworkLayer():
 
 
 class PhysicalLayer():
-    def __init__(self, ):
-        pass
+    def __init__(self, ip, port):
+        s = socket.socket()
+        
+        try : 
+            s.bind((ip, port))
+            s.listen(1)
+            self.sock, addr = s.accept()
+            print("Server made on", ip, port)
+        except Exception:
+            s.connect((ip, port))
+            self.sock = s
+            print("Client made on", ip, port)
+        
+        self.sendingThread = threading.Thread(target=self.send, args=("Physical Layer's Sending thread"))
+        self.recThread = threading.Thread(target=self.recv, args=("Physical Layer's Receiving thread"))
+
+    def send(self, name):
+        
+        # while True:
+        #     data = raw_input("-> ")
+        #     print "sending: " + str(data)
+        #     sock.send(data)
+        # sock.close()
+
+    def recv(self, name):
+    #      while True:
+    #     data = sock.recv(1024)     #Buffer we want to receive is max of 1024 bytes 
+    #     if not data:
+    #         break
+    #     print "from connected user: " + str(data)
+    # sock.close()
+    
     def enable(self,):
         pass
     def disable(self):
@@ -92,6 +122,7 @@ class PhysicalLayer():
     def get_packet(self,):
         pass
     def wait_for_event(self,):
+        # return 0 or 2(etc) when sending or receiving 
         pass
     def to_physical_layer(self, ):
         pass

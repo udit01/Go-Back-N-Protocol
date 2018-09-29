@@ -25,14 +25,14 @@ class seq_nr():
 		self.val = self.val - 1
 
 
-class event_type():
-	def __init__(self, inp):
-		# 0 -> Frame Arrival
-		# 1 -> Checksum Error
-		# 2 -> Timeout
-		# 3 -> Network Layer Ready
-		# 4 -> NULL
-		self.type = inp
+# class event_type():
+# 	def __init__(self, inp):
+# 		# 0 -> Frame Arrival
+# 		# 1 -> Checksum Error
+# 		# 2 -> Timeout
+# 		# 3 -> Network Layer Ready
+# 		# 4 -> NULL
+# 		self.type = inp
 
 
 
@@ -48,6 +48,11 @@ class Node():
 		self.networkLayer = NetworkLayer(infilepath, outfilepath)
 		self.physicalLayer = PhysicalLayer(ip, port)
 		self.MAX_SEQ = windowSize
+		
+		# Starts timer etc
+
+		
+		self.protocol5()
 
 	def start_timer(self, frame_nr):
 		pass
@@ -85,9 +90,7 @@ class Node():
 		i = seq_nr(0) 
 		# /* used to index into the buffer array */
 		
-		# nl = NetworkLayer()
 		self.networkLayer.enable()
-		# enable_network_layer()
 		# /* allow network layer ready events */
 
 
@@ -96,11 +99,12 @@ class Node():
 
 		while (True):
 			
+			# Event is a number from 0 to 3
 			event = self.physicalLayer.wait_for_event()
 			# event = wait_for_event() 
 			# /* four possibilities: see event type above */
 			
-			n = event.type
+			n = event
 			
 			# netowrk  layer ready
 			# netowrk  layer (Should be?) ready
