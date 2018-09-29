@@ -36,19 +36,18 @@ class event_type():
 
 
 
-def wait_for_event():
-	e = event_type(4)
-	return e
+# def wait_for_event():
+# 	e = event_type(4)
+# 	return e
 
 def stop_timer(number):
 	pass
 
 class Node():
-	def __init__(self, nl, pl ):
-		self.networkLayer = nl
-		self.physicalLayer = pl
-		self.MAX_SEQ = 7
-
+	def __init__(self, ip="127.0.0.1", port="3000", windowSize=7, infilepath, outfilepath ):
+		self.networkLayer = NetworkLayer(infilepath, outfilepath)
+		self.physicalLayer = PhysicalLayer(ip, port)
+		self.MAX_SEQ = windowSize
 
 	def start_timer(self, frame_nr):
 		pass
@@ -103,7 +102,8 @@ class Node():
 			
 			n = event.type
 			
-			# Network layer ready
+			# netowrk  layer ready
+			# netowrk  layer (Should be?) ready
 			if n == 0 :
 				#  /* the network layer has a packet to send */
 				# /* Accept, save, and transmit a new frame. */
@@ -133,7 +133,8 @@ class Node():
 					
 					if error_code == 1 :
 						# Time to end transmission 
-						
+						pass
+
 					# /* pass packet to network layer */
 					
 					# /* advance lower edge of receiver’s window */

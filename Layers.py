@@ -27,7 +27,7 @@ class Frame(Packet):
 
 
 class NetworkLayer():
-    def __init__(self, infilepath='./data/test.txt', outfilepath='./data/recv.txt', ):
+    def __init__(self, infilepath='./data/test.txt', outfilepath='./data/recv.txt'):
         self.packetsToSend = []
         self.packetsReceived = []
         self.infilepath = infilepath
