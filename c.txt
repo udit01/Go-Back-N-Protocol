@@ -8,7 +8,6 @@ than 27char
 and 1 is whitespace
 PQ
 RS
-TU
 PQ
 RS
 TU
@@ -23,13 +22,6 @@ RS
 TU
 PQ
 RS
-TU
-PQ
-RS
-TU
-PQ
-RS
-TU
 PQ
 RS
 TU

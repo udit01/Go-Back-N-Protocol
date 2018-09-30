@@ -144,9 +144,10 @@ class Node():
 
 				#/* transmit the frame */
 				x = random.uniform(0,1)
-				if (x>0):
+				if (x>0.2):
 					self.send_data(next_frame_to_send.val ,frame_expected.val, buffer)
 				else:
+					pass
 					print ("Not sending Frame: next_frame_to_send", next_frame_to_send.val )
 					print ("Data skipped: ", buffer[next_frame_to_send.val])
 
@@ -268,6 +269,7 @@ class Node():
 					next_frame_to_send.inc()
 					# /* prepare to send the next one */
 			else : 
+				pass
 				print("outside precribed event type ")
 
 			if (nbuffered.val < MAX_SEQ ):
