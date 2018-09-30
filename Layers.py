@@ -254,9 +254,6 @@ class PhysicalLayer():
 				print("Type of deserialized data : ", f.type)
 				print("Size of Buf: ", len(self.buf))
 				time_initial = time.time() 
-				#Starting timer again after getting data
-				# if (self.event > 1 and self.event < ):
-				# 	self.event += 1
 				self.event = 1
 
 
