@@ -15,30 +15,36 @@ class Packet():
 
 	
 
-class Frame(Packet):
-	def __init__(self, info = "", seq = 0, ack = 0):
-		super().__init__(info = info)
+class Frame():
+	def __init__(self, info = "", seq = 0, ack = 0, num = 0):
+		# super().__init__(info = info)
 		# Payload
-		# self.info = info
+		self.info = info
 		# Sequence number in window
 		self.seq = seq
 		# Number of packet to send next
 		self.ack = ack
-    def serialize(self):
-        st = str(self.seq)
-        st += ";"
-        st += self.info
-        st += ";"
-        st += str(self.ack)
-        st += ";"
+		self.type = num
+	
+	def serialize(self):
+		st = str(self.seq)
+		st += ";"
+		st += self.info
+		st += ";"
+		st += str(self.ack)
+		st += ";"
+		# st.encode()
+		return st.encode()
 
-        return st
-
-    def deserialize(self, str):
-        l = str.split(';')
-        self.seq = int(l[0])
-        self.info = l[1]
-        self.ack = int(l[2])
+	def deserialize(self, b):
+		str = b.decode()
+		l = str.split(';')
+		if (l[0] == ''):
+			self.seq = -1
+		else:
+			self.seq = int(l[0])
+		self.info = l[1]
+		self.ack = int(l[2])
 
 
 class NetworkLayer():
@@ -55,6 +61,8 @@ class NetworkLayer():
 		pass
 	def disable(self):
 		pass
+	
+	# returns a packet to send
 	def get_packet(self):
 
 		# if sending packets fin then send an end packet
@@ -79,15 +87,15 @@ class NetworkLayer():
 		
 
 	# def to_network_layer(self, info):
-	def to_network_layer(self, packet):
+	def to_network_layer(self, data, type):
 		
 		# if last packet then , call the write file function 
-		if packet.info == 1 : 
+		if type == 1 : 
 			self.write_to_file()
 			return 1 
 			# This code means that the last packet has been received and we need to close the connection now
 		
-		self.packetsReceived.append(Packet(info))
+		self.packetsReceived.append(Packet(data))
 		return 0
 
 	def make_packets(self, filepath):
@@ -106,7 +114,7 @@ class PhysicalLayer():
 		self.buf = []
 		s = socket.socket()
 		self.max_wait = 10
-		self.event = 10
+		self.event = 5
 		
 		try : 
 			s.bind((ip, port))
@@ -119,7 +127,7 @@ class PhysicalLayer():
 			print("Client made on", ip, port)
 		
 		# self.sendingThread = threading.Thread(target=self.send, args=("Physical Layer's Sending thread"))
-		self.recThread = threading.Thread(target=self.recv, args=("Physical Layer's Receiving thread"))
+		self.recThread = threading.Thread(target=self.receive, args=("Physical Layer's Receiving thread",))
 
 	def close(self):
 		pass
@@ -143,23 +151,32 @@ class PhysicalLayer():
 		print ("Sending: " + str(frame))
 		self.sock.send(frame.serialize())
 
-	def recv(self, name):
+	def receive(self, name):
 		time_initial = time.time()
 		time_final = time.time()
 		time_elapsed = time_final - time_initial
 		
 		while (time_elapsed < self.max_wait):
-			data = sock.recv(1024)     #Buffer we want to receive is max of 1024 bytes 
+			print("in receiver", self.event)
+			data = self.sock.recv(8)     #Buffer we want to receive is max of 1024 bytes 
 			if not data:
 				self.event = 5
 				break
 			else : 
 				self.event = 1
 				f = Frame()
-				self.buf.append(f.deserialize(data))
+				print ("Data receieved in Physical layer's receive function : ", data)
+				f.deserialize(data)
+				self.buf.append(f)
+				print("Info of deserialized data : ", f.info)
+				time_initial = time.time() 
+				#Starting timer again after getting data
+				self.event = 1
+				return
+				
 			time_final = time.time()
 			time_elapsed = time_final - time_initial
-		self.event = 4
+		self.event = 3
 		#Close the thread since timed out
 
 	def enable(self,):
