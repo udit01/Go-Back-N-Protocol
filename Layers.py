@@ -28,13 +28,15 @@ class Frame():
 		self.prev_max_ack = -1
 	
 	def serialize(self):
-		st = str(self.seq)
+
+		# 44 byte sized packet
+		st = f'str(self.seq): <4'
 		st += ";"
-		st += self.info
+		st += f'self.info: <28'
 		st += ";"
-		st += str(self.ack)
+		st += f'str(self.ack): <4'
 		st += ";"
-		st += str(self.type)
+		st += f'str(self.type): <4'
 		st += ";"
 		# st.encode()
 		return st.encode()
@@ -42,24 +44,37 @@ class Frame():
 	def deserialize(self, b):
 		str = b.decode()
 		l = str.split(';')
+		
+		empty = '    '
+		
 		print("Decerializing l: ", l)
-		if (l[0] == ''):
+		
+		# because paddind with whitespaces
+		if (l[0] == empty):
 			self.seq = -1
 		else:
 			self.seq = int(l[0])
+
 		self.info = l[1]
-		if (l[2] == ''):
+
+		if (l[2] == empty):
 			self.ack = self.prev_max_ack
 		else:
 			self.ack = int(l[2])
 			if (self.ack > self.prev_max_ack):
 				self.prev_max_ack = self.ack
-		self.type = int(l[3])
-		if (len(l) > 4 ):
-			if (l[4] == ''):
-				self.type = 0
-			else:
-				self.type = 1
+		
+		if(l[3] == empty):
+			self.type = 0
+		else :
+			self.type = int(l[3])
+			
+		
+		# if (len(l) > 4 ):
+		# 	if (l[4] == ''):
+		# 		self.type = 0
+		# 	else:
+		# 		self.type = 1
 
 
 class NetworkLayer():
