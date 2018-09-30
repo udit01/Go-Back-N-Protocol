@@ -44,7 +44,7 @@ def stop_timer(number):
 	pass
 
 class Node():
-	def __init__(self, ip="127.0.0.1", port="3000", windowSize=7, infilepath, outfilepath ):
+	def __init__(self, ip="127.0.0.1", port="3000", windowSize=7, infilepath="./a.txt", outfilepath="./b.txt" ):
 		self.physicalLayer = PhysicalLayer(ip, port)
 		self.networkLayer = NetworkLayer(infilepath, outfilepath)
 		self.MAX_SEQ = windowSize
@@ -83,7 +83,7 @@ class Node():
 
 		# packet buffer[self.MAX_SEQ + 1] 
 		# /* buffers for the outbound stream */
-		buffer = [packet() for i in range(self.MAX_SEQ+1)]
+		buffer = [Packet() for i in range(self.MAX_SEQ+1)]
 		
 		i = seq_nr(0) 
 		# /* used to index into the buffer array */
@@ -116,21 +116,19 @@ class Node():
 			if n == 0 :
 				#  /* the network layer has a packet to send */
 				# /* Accept, save, and transmit a new frame. */
-				
+
 				# /* fetch new packet */
 				buffer[next_frame_to_send.val] = self.networkLayer.get_packet() 
 				# packet = get_packet_from_network layer() 
-				
-				# /* expand the sender’s window */
 				nbuffered.inc()
-				
+
 				#/* transmit the frame */
 				self.send_data(next_frame_to_send.val ,frame_expected.val, buffer)
-				
-				# /* advance sender’s upper window edge */
+
+				# /* advance sender's upper window edge */
 				next_frame_to_send.inc()
 
-			else if n == 1 :
+			elif n == 1 :
 				# /* a data or control frame has arrived */
 				
 				fr = self.physicalLayer.buf[-1]
@@ -146,28 +144,29 @@ class Node():
 
 					# /* pass packet to network layer */
 					
-					# /* advance lower edge of receiver’s window */
+					# /* advance lower edge of receiver window */
 					frame_expected.inc()
 					
-					# /* Ack n implies n − 1, n − 2, etc. Check for this. */
+					# /* Ack n implies n-1, n-2, etc. Check for this. */
 					
 					while (between(ack_expected.val, fr.ack, next_frame_to_send.val)):
 						# /* Handle piggybacked ack. */
-						# nbuffered = nbuffered − 1 # /* one frame fewer buffered */
+						# nbuffered = nbuffered-1 # /* one frame fewer buffered */
 						nbuffered.dec()
 						# /* one frame fewer buffered */
 						
 						stop_timer(ack_expected.val) # /* frame arrived intact # stop timer */
 						
-						# /* contract sender’s window */
+						# /* contract senders window */
 						ack_expected.inc()
 
 			# CheckSum error
-			else if n == 2 : 
+			elif n == 2 : 
 				# /* just ignore bad frames */
+				pass
 
 			# Timeout
-			else if n == 3 :
+			elif n == 3 :
 				#Starting receiver again
 				self.physicalLayer.start()
 				# /* trouble  retransmit all outstanding frames */
