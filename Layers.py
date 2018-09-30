@@ -165,15 +165,12 @@ class PhysicalLayer():
 			else : 
 				self.event = 1
 				f = Frame()
-				print ("Data receieved in Physical layer's receive function : ", data)
+				print ("Empty F:" , f.info  )
+				print (data)
 				f.deserialize(data)
 				self.buf.append(f)
-				print("Info of deserialized data : ", f.info)
-				time_initial = time.time() 
-				#Starting timer again after getting data
-				self.event = 1
-				return
-				
+				print(f.info)
+				time_initial = time.time() #Starting timer again after getting data
 			time_final = time.time()
 			time_elapsed = time_final - time_initial
 		self.event = 3
