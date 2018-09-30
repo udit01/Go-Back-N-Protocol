@@ -2,7 +2,7 @@ from Host import *
 from Node import *
 import time
 import threading
-
+import sys
 # class StoppableThread(threading.Thread):
 #     """Thread class with a stop() method. The thread itself has to check
 #     regularly for the stopped() condition."""
@@ -182,6 +182,8 @@ class PhysicalLayer():
 	def close(self):
 		self.terminate = 1
 		self.closeSocket()
+		time.sleep(5)
+		sys.exit()
 		# KILL THE THREAD
 		# self.recThread.raise
 		# if not self.recThread.stopped():
@@ -230,8 +232,10 @@ class PhysicalLayer():
 				# BREAK OUTER LOOP
 				return
 			#Buffer we want to receive is max of 1024 bytes 
-			if (not data and self.event == 10) :
+			if (data == b'' and self.event == 10) :
+				print("NOT DATA AND EVENT 10")
 				self.event = 5
+				self.close()
 				# break
 			else : 
 				
