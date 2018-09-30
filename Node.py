@@ -142,7 +142,8 @@ class Node():
 			elif n == 1 :
 				# /* a data or control frame has arrived */
 				print ("PhysicalLayer Buf", self.physicalLayer.buf)
-				fr = self.physicalLayer.buf[-1]
+				fr = self.physicalLayer.buf[0]
+				self.physicalLayer.buf.pop(0)
 				# /* get incoming frame from physical layer */
 				print("fr.seq", fr.seq)
 				print("frame_expected.val", frame_expected.val)
@@ -177,7 +178,8 @@ class Node():
 				#Need an empty frame -- and just add ack to it
 				#Entered the loop because packets to send are over
 				print ("PhysicalLayer Buf", self.physicalLayer.buf)
-				fr = self.physicalLayer.buf[-1]
+				fr = self.physicalLayer.buf[0]
+				self.physicalLayer.buf.pop(0)
 				# /* get incoming frame from physical layer */
 				if (fr.seq == frame_expected.val) :
 					# /* Frames are accepted only in order. */

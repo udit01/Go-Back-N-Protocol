@@ -25,6 +25,7 @@ class Frame():
 		# Number of packet to send next
 		self.ack = ack
 		self.type = num
+		self.prev_max_ack = -1
 	
 	def serialize(self):
 		st = str(self.seq)
@@ -46,10 +47,19 @@ class Frame():
 		else:
 			self.seq = int(l[0])
 		self.info = l[1]
-		self.ack = int(l[2])
+		if (l[2] == ''):
+			self.ack = self.prev_max_ack
+		else:
+			self.ack = int(l[2])
+			if (self.ack > self.prev_max_ack):
+				self.prev_max_ack = self.ack
 		self.type = int(l[3])
-		if (len(l) == 6 ):
-			self.type = int(l[4])
+		if (len(l) > 4 ):
+			if (l[4] == ''):
+				self.type = 1
+			else:
+				self.type = int(l[4])
+
 
 
 class NetworkLayer():
@@ -81,10 +91,10 @@ class NetworkLayer():
 
 		return p
 
-	def write_to_file(self, filepath = "b.txt"):
+	def write_to_file(self, filepath = "default.txt"):
 		
 		strings = [packet.info for packet in self.packetsReceived]
-		data = " ".join(strings)
+		data = "".join(strings)
 
 		with open(filepath, 'w') as outfile:
 			outfile.write(data)
@@ -98,7 +108,7 @@ class NetworkLayer():
 				
 		# if last packet then , call the write file function 
 		if type == 1 : 
-			self.write_to_file()
+			self.write_to_file(self.outfilepath )
 			return 1 
 			# This code means that the last packet has been received and we need to close the connection now
 		
