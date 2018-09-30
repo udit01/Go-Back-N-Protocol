@@ -57,7 +57,7 @@ class Frame():
 			print("L0-----", l[0])
 			self.seq = int(l[0])
 
-		self.info = l[1].rstrip()
+		self.info = l[1].rstrip(' ')
 
 		if (l[2] == empty):
 			self.ack = self.prev_max_ack

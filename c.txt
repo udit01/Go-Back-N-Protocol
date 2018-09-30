@@ -1,27 +1,27 @@
 AB
-                         EF
-                         IJ
-                         AB
-                         EF
-                         IJ
-                         AB
-                         EF
-                         IJ
-                         AB
-                         EF
-                         IJ
-                         AB
-                         EF
-                         IJ
-                         AB
-                         EF
-                         IJ
-                         AB
-                         EF
-                         IJ
-                         AB
-                         EF
-                         IJ
-                         AB
-                         EF
-                         IJ                                                                                  
+EF
+IJ
+AB
+EF
+IJ
+AB
+EF
+IJ
+AB
+EF
+IJ
+AB
+EF
+IJ
+AB
+EF
+IJ
+AB
+EF
+IJ
+AB
+EF
+IJ
+AB
+EF
+IJ
