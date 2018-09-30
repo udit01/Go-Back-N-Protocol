@@ -107,18 +107,16 @@ class Node():
 			# /* four possibilities: see event type above */
 			
 
-			print ("event_phys",event_phys)
+
 			if event_phys < 4:
 				n = event_phys
 				print ("event_phys" , n)
 			elif event_netw != -1:
 				n = event_netw
 				print ("event_netw" , n)
-			elif event_netw == -1 and len(self.physicalLayer.buf) !=0:
+			elif event_netw == -1:
 				n = 4 #In this case start sending empty packets whenever required by n
 				print ("event_netw" , n)
-			else :
-				continue
 
 
 			
@@ -141,11 +139,9 @@ class Node():
 
 			elif n == 1 :
 				# /* a data or control frame has arrived */
-				print ("PhysicalLayer Buf", self.physicalLayer.buf)
+				print (self.physicalLayer.buf)
 				fr = self.physicalLayer.buf[-1]
 				# /* get incoming frame from physical layer */
-				print("fr.seq", fr.seq)
-				print("frame_expected.val", frame_expected.val)
 				if (fr.seq == frame_expected.val) :
 					# /* Frames are accepted only in order. */
 
@@ -172,11 +168,11 @@ class Node():
 						
 						# /* contract senders window */
 						ack_expected.inc()
-				self.physicalLayer.event = 10 # Making it 5 since the received data has been read and now we are waiting
+				self.physicalLayer.event = 5 # Making it 5 since the received data has been read and now we are waiting
 			elif n == 4 :
 				#Need an empty frame -- and just add ack to it
 				#Entered the loop because packets to send are over
-				print ("PhysicalLayer Buf", self.physicalLayer.buf)
+
 				fr = self.physicalLayer.buf[-1]
 				# /* get incoming frame from physical layer */
 				if (fr.seq == frame_expected.val) :
@@ -218,7 +214,7 @@ class Node():
 					# /* advance sender's upper window edge */
 					next_frame_to_send.inc()
 
-				self.physicalLayer.event = 10 # Making it 5 since the received data has been read and now we are waiting
+				self.physicalLayer.event = 5 # Making it 5 since the received data has been read and now we are waiting
 			# CheckSum error
 			elif n == 2 : 
 				# /* just ignore bad frames */

@@ -33,6 +33,8 @@ class Frame():
 		st += ";"
 		st += str(self.ack)
 		st += ";"
+		st += str(self.type)
+		st += ";"
 		# st.encode()
 		return st.encode()
 
@@ -45,6 +47,9 @@ class Frame():
 			self.seq = int(l[0])
 		self.info = l[1]
 		self.ack = int(l[2])
+		self.type = int(l[3])
+		if (len(l) == 6 ):
+			self.type = int(l[4])
 
 
 class NetworkLayer():
@@ -88,7 +93,9 @@ class NetworkLayer():
 
 	# def to_network_layer(self, info):
 	def to_network_layer(self, data, type):
-		
+
+		print("IN network layer , got packet of type : ", type)
+				
 		# if last packet then , call the write file function 
 		if type == 1 : 
 			self.write_to_file()
@@ -114,7 +121,7 @@ class PhysicalLayer():
 		self.buf = []
 		s = socket.socket()
 		self.max_wait = 10
-		self.event = 5
+		self.event = 10
 		
 		try : 
 			s.bind((ip, port))
@@ -156,22 +163,25 @@ class PhysicalLayer():
 		time_final = time.time()
 		time_elapsed = time_final - time_initial
 		
-		while (time_elapsed < self.max_wait):
+		while (True): #time_elapsed < self.max_wait
 			print("in receiver", self.event)
-			data = self.sock.recv(8)     #Buffer we want to receive is max of 1024 bytes 
-			if not data:
+			data = self.sock.recv(10)     #Buffer we want to receive is max of 1024 bytes 
+			if (not data and self.event == 10) :
 				self.event = 5
 				break
 			else : 
-				self.event = 1
+				
 				f = Frame()
 				print ("Data receieved in Physical layer's receive function : ", data)
 				f.deserialize(data)
 				self.buf.append(f)
 				print("Info of deserialized data : ", f.info)
+				print("Type of deserialized data : ", f.type)
+				print("Size of Buf: ", len(self.buf))
 				time_initial = time.time() 
 				#Starting timer again after getting data
-				
+				self.event = 1
+
 			time_final = time.time()
 			time_elapsed = time_final - time_initial
 		self.event = 3
