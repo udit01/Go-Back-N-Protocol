@@ -23,7 +23,7 @@ class Host():
 			self.node.run()
 		except :
 			print("Connnection ended")
-			self.node.networkLayer.write_to_file()
+			self.node.networkLayer.write_to_file(outfilepath)
 
 		print("END HAS COME")
 # if __name__ == "__main__":

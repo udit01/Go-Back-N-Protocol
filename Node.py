@@ -114,7 +114,7 @@ class Node():
 				n = 4 #In this case start sending empty packets whenever required by n
 				print ("event_netw" , n)
 			elif event_netw == -1 and self.physicalLayer.terminate == 1 :
-				self.physicalLayer.closeSocket()
+				self.physicalLayer.close()
 				print("Breaking")
 				break
 			else :

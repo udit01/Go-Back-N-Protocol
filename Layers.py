@@ -3,7 +3,19 @@ from Node import *
 import time
 import threading
 
+# class StoppableThread(threading.Thread):
+#     """Thread class with a stop() method. The thread itself has to check
+#     regularly for the stopped() condition."""
 
+#     def __init__(self, target, args):
+#         super(StoppableThread, self).__init__(target, args)
+#         self._stop_event = threading.Event()
+
+#     def stop(self):
+#         self._stop_event.set()
+
+#     def stopped(self):
+#         return self._stop_event.is_set()
 
 class Packet():
 	def __init__(self, info="", num=0):
@@ -30,14 +42,14 @@ class Frame():
 	def serialize(self):
 
 		# 44 byte sized packet
-		st = str(self.seq).ljust(4)
+		st = str(self.seq).ljust(4)[:4]
 		# st = f'{str(self.seq): <4}'
 		st += ";"
-		st += str(self.info).ljust(28)
+		st += str(self.info).ljust(28)[:28]
 		st += ";"
-		st += str(self.ack).ljust(4)
+		st += str(self.ack).ljust(4)[:4]
 		st += ";"
-		st += str(self.type).ljust(4)
+		st += str(self.type).ljust(4)[:4]
 		st += ";"
 		# st.encode()
 		return st.encode()
@@ -101,7 +113,7 @@ class NetworkLayer():
 		# ELSE SEND NORMAL PACKETS 
 		if(self.nextPacketToSend >= self.dataSize) :
 			self.event = -1
-			return Packet( "", 1)
+			return Packet("", 1)
 			# Send a packet with "END" STRING OR A PACKET OF DIFFERENT TYPE
 		p = self.packetsToSend[self.nextPacketToSend]
 		self.nextPacketToSend += 1
@@ -165,9 +177,17 @@ class PhysicalLayer():
 		
 		# self.sendingThread = threading.Thread(target=self.send, args=("Physical Layer's Sending thread"))
 		self.recThread = threading.Thread(target=self.receive, args=("Physical Layer's Receiving thread",))
+		# self.recThread = StoppableThread(target=self.receive, args=("Physical Layer's Receiving thread",))
 
 	def close(self):
-		pass
+		self.terminate = 1
+		self.closeSocket()
+		# KILL THE THREAD
+		# self.recThread.raise
+		# if not self.recThread.stopped():
+		# 	self.recThread.stop()
+
+
 	def closeSocket(self):
 		self.sock.close()
 
@@ -187,7 +207,8 @@ class PhysicalLayer():
 	def recv_end(self):
 		# if self.recThread.isAlive():
 		# 	self.recThread.sleep()
-		self.terminate = 1
+		# self.terminate = 1
+		self.close()
 
 	def send(self, frame):
 		
@@ -199,19 +220,19 @@ class PhysicalLayer():
 		time_final = time.time()
 		time_elapsed = time_final - time_initial
 		
-		while (self.terminate == 0  ): #time_elapsed < self.max_wait
+		while (self.terminate == 0): #time_elapsed < self.max_wait
 			print("in receiver", self.event)
 			try : 
 				data = self.sock.recv(44)
 			except : 
 				print("DATA didn't come")
-				# self.sock.close()
-				self.terminate = 1
+				self.close()
+				# BREAK OUTER LOOP
 				return
 			#Buffer we want to receive is max of 1024 bytes 
 			if (not data and self.event == 10) :
 				self.event = 5
-				break
+				# break
 			else : 
 				
 				f = Frame()
@@ -227,8 +248,9 @@ class PhysicalLayer():
 
 			time_final = time.time()
 			time_elapsed = time_final - time_initial
-		# self.event = 3
+		# self.event = 3s
 		#Close the thread since timed out
+		self.close()
 
 	def enable(self,):
 		pass
