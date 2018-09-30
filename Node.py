@@ -44,7 +44,7 @@ class seq_nr():
 # 	pass
 
 class Node():
-	def __init__(self, ip="127.0.0.1", port="3000", windowSize=7, infilepath="./a.txt", outfilepath="./b.txt" ):
+	def __init__(self, ip="127.0.0.1", port="3000", windowSize=3, infilepath="./a.txt", outfilepath="./b.txt" ):
 		self.physicalLayer = PhysicalLayer(ip, port)
 		self.networkLayer = NetworkLayer(infilepath, outfilepath)
 		self.MAX_SEQ = windowSize
@@ -61,7 +61,7 @@ class Node():
 	def send_data(self, next_frame_to_send, frame_expected, buffer):
 		# /* Construct and send a data frame. */
 		
-		packet = buffer[next_frame_to_send]
+		packet = buffer[next_frame_to_send % (self.MAX_SEQ + 1)] 
 		
 		s = Frame(packet.info, next_frame_to_send,
 				(frame_expected + self.MAX_SEQ) % (self.MAX_SEQ + 1),
@@ -129,7 +129,9 @@ class Node():
 				# /* Accept, save, and transmit a new frame. */
 
 				# /* fetch new packet */
-				buffer[next_frame_to_send.val] = self.networkLayer.get_packet() 
+				# if (next_frame_to_send.val > self.MAX_SEQ ):
+				# 	continue
+				buffer[next_frame_to_send.val% (self.MAX_SEQ + 1)] = self.networkLayer.get_packet() 
 				# packet = get_packet_from_network layer() 
 				nbuffered.inc()
 
@@ -213,7 +215,7 @@ class Node():
 
 					assert(p.type == 1)
 
-					buffer[next_frame_to_send.val] = p
+					buffer[next_frame_to_send.val % (self.MAX_SEQ + 1)] = p
 					#/* transmit the frame */
 					self.send_data(next_frame_to_send.val, frame_expected.val, buffer)
 
