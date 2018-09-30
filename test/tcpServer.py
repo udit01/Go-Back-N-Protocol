@@ -22,22 +22,22 @@ def send(name, sock):
     sock.close()
 
 
-def Main(mode=0):
+def Main():
     host = '127.0.0.1'
-    port = 5001
+    port = 5005
 
     s = socket.socket()
-    print(mode)
-    if mode == 0:
+
+    try:
         s.bind((host,port))
         s.listen(1) 
         c, addr = s.accept()
         print "Connection from: " + str(addr)
     
-
-    else : 
+    except : 
         s.connect((host, port))
         c = s
+        print ("Client")
 
     t_rec = threading.Thread(target=receive, args=("RetThread", c))
     t_send = threading.Thread(target=send, args=("SendThread", c))
@@ -46,7 +46,5 @@ def Main(mode=0):
     t_send.start()
 
 
-    
-
 if __name__ == '__main__':
-    Main(int(args[1]))
+    Main()
