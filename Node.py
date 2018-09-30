@@ -10,12 +10,12 @@ from Layers import *
 MAX_SEQ = 3
 
 def between(a, b, c):
+	print ("BETWEEN FUNCTION CALLED")
 	# /* Return true if a <= b < c circularly # false otherwise. */
 	if (((a <= b) and (b < c)) or ((c < a) and (a <= b)) or ((b < c) and (c < a))):
 		return True
 	else:
 		return False
-
 
 class seq_nr():
 	def __init__(self, num):
@@ -81,17 +81,13 @@ class Node():
 		nbuffered = seq_nr(0)  # /* number of output buffers currently in use */ # /* initially no packets are buffered */
 		
 		r = Frame() # /* scratch variable */
-
 		# packet buffer[MAX_SEQ + 1] 
 		# /* buffers for the outbound stream */
 		buffer = [Packet() for i in range(MAX_SEQ+1)]
-		
 		# self.networkLayer.enable()
 		# /* allow network layer ready events */
-
 		# Why is this a while truw with break at each seq ?
 		self.physicalLayer.start()
-
 
 		while (True):
 			print("Ack_expected", ack_expected.val)
@@ -188,7 +184,8 @@ class Node():
 					
 					if error_code == 1 :
 						# Time to end transmission 
-						pass
+						self.physicalLayer.recv_end()
+						# pass
 
 					# /* pass packet to network layer */
 					
