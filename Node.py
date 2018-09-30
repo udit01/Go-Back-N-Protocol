@@ -7,6 +7,7 @@
 
 from Layers import *
 
+MAX_SEQ = 3
 
 def between(a, b, c):
 	# /* Return true if a <= b < c circularly # false otherwise. */
@@ -20,9 +21,9 @@ class seq_nr():
 	def __init__(self, num):
 		self.val = num
 	def inc(self):
-		self.val = self.val + 1
+		self.val = (self.val + 1) %(MAX_SEQ + 1)
 	def dec(self):
-		self.val = self.val - 1
+		self.val = (self.val - 1) %(MAX_SEQ + 1)
 
 
 # class event_type():
@@ -47,7 +48,7 @@ class Node():
 	def __init__(self, ip="127.0.0.1", port="3000", windowSize=3, infilepath="./a.txt", outfilepath="./b.txt" ):
 		self.physicalLayer = PhysicalLayer(ip, port)
 		self.networkLayer = NetworkLayer(infilepath, outfilepath)
-		self.MAX_SEQ = windowSize
+		MAX_SEQ = windowSize
 		# Starts timer etc
 		
 		self.protocol5()
@@ -61,10 +62,10 @@ class Node():
 	def send_data(self, next_frame_to_send, frame_expected, buffer):
 		# /* Construct and send a data frame. */
 		
-		packet = buffer[next_frame_to_send % (self.MAX_SEQ + 1)] 
+		packet = buffer[next_frame_to_send ] 
 		
 		s = Frame(packet.info, next_frame_to_send,
-				(frame_expected + self.MAX_SEQ) % (self.MAX_SEQ + 1),
+				(frame_expected + MAX_SEQ) % (MAX_SEQ + 1),
 				packet.type)
 				#/* piggyback ack */
 		
@@ -81,25 +82,21 @@ class Node():
 		
 		r = Frame() # /* scratch variable */
 
-		# packet buffer[self.MAX_SEQ + 1] 
+		# packet buffer[MAX_SEQ + 1] 
 		# /* buffers for the outbound stream */
-		buffer = [Packet() for i in range(self.MAX_SEQ+1)]
+		buffer = [Packet() for i in range(MAX_SEQ+1)]
 		
-		i = seq_nr(0) 
-		# /* used to index into the buffer array */
-		
-		self.networkLayer.enable()
+		# self.networkLayer.enable()
 		# /* allow network layer ready events */
-
 
 		# Why is this a while truw with break at each seq ?
 		self.physicalLayer.start()
 
 
 		while (True):
+			print("Ack_expected", ack_expected.val)
 			
 			# Event is a number from 0 to 3
-			
 			event_netw = self.networkLayer.event
 			event_phys = self.physicalLayer.event
 
@@ -129,9 +126,9 @@ class Node():
 				# /* Accept, save, and transmit a new frame. */
 
 				# /* fetch new packet */
-				# if (next_frame_to_send.val > self.MAX_SEQ ):
+				# if (next_frame_to_send.val > MAX_SEQ ):
 				# 	continue
-				buffer[next_frame_to_send.val% (self.MAX_SEQ + 1)] = self.networkLayer.get_packet() 
+				buffer[next_frame_to_send.val] = self.networkLayer.get_packet() 
 				# packet = get_packet_from_network layer() 
 				nbuffered.inc()
 
@@ -156,7 +153,8 @@ class Node():
 					
 					if error_code == 1 :
 						# Time to end transmission 
-						pass
+						self.physicalLayer.recv_end()
+						# pass
 
 					# /* pass packet to network layer */
 					
@@ -215,7 +213,7 @@ class Node():
 
 					assert(p.type == 1)
 
-					buffer[next_frame_to_send.val % (self.MAX_SEQ + 1)] = p
+					buffer[next_frame_to_send.val % (MAX_SEQ + 1)] = p
 					#/* transmit the frame */
 					self.send_data(next_frame_to_send.val, frame_expected.val, buffer)
 
@@ -245,7 +243,7 @@ class Node():
 			else : 
 				print("outside precribed event type ")
 
-			if (nbuffered.val < self.MAX_SEQ):
+			if (nbuffered.val < MAX_SEQ):
 				self.networkLayer.enable()
 			else:
 				self.networkLayer.disable()

@@ -165,6 +165,10 @@ class PhysicalLayer():
 		# self.sendingThread.start()
 		self.recThread.start()
 
+	def recv_end(self):
+		if self.recThread.isAlive():
+			self.recThread.stop()
+
 	def send(self, frame):
 		
 		print ("Sending: " + str(frame))
