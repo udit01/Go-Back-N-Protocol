@@ -42,6 +42,7 @@ class Frame():
 	def deserialize(self, b):
 		str = b.decode()
 		l = str.split(';')
+		print("Decerializing l: ", l)
 		if (l[0] == ''):
 			self.seq = -1
 		else:
@@ -56,10 +57,9 @@ class Frame():
 		self.type = int(l[3])
 		if (len(l) > 4 ):
 			if (l[4] == ''):
-				self.type = 1
+				self.type = 0
 			else:
-				self.type = int(l[4])
-
+				self.type = 1
 
 
 class NetworkLayer():
@@ -94,6 +94,7 @@ class NetworkLayer():
 	def write_to_file(self, filepath = "default.txt"):
 		
 		strings = [packet.info for packet in self.packetsReceived]
+		print("Writing to File", strings)
 		data = "".join(strings)
 
 		with open(filepath, 'w') as outfile:
@@ -108,6 +109,7 @@ class NetworkLayer():
 				
 		# if last packet then , call the write file function 
 		if type == 1 : 
+			self.packetsReceived.append(Packet(data))
 			self.write_to_file(self.outfilepath )
 			return 1 
 			# This code means that the last packet has been received and we need to close the connection now
