@@ -30,13 +30,14 @@ class Frame():
 	def serialize(self):
 
 		# 44 byte sized packet
-		st = f'str(self.seq): <4'
+		st = str(self.seq).ljust(4)
+		# st = f'{str(self.seq): <4}'
 		st += ";"
-		st += f'self.info: <28'
+		st += str(self.info).ljust(28)
 		st += ";"
-		st += f'str(self.ack): <4'
+		st += str(self.ack).ljust(4)
 		st += ";"
-		st += f'str(self.type): <4'
+		st += str(self.type).ljust(4)
 		st += ";"
 		# st.encode()
 		return st.encode()
@@ -53,6 +54,7 @@ class Frame():
 		if (l[0] == empty):
 			self.seq = -1
 		else:
+			print("L0-----", l[0])
 			self.seq = int(l[0])
 
 		self.info = l[1].rstrip()
@@ -149,6 +151,7 @@ class PhysicalLayer():
 		s = socket.socket()
 		self.max_wait = 10
 		self.event = 10
+		self.terminate = 0
 		
 		try : 
 			s.bind((ip, port))
@@ -165,7 +168,8 @@ class PhysicalLayer():
 
 	def close(self):
 		pass
-
+	def closeSocket(self):
+		self.sock.close()
 
 	# def wait_for_event():
 
@@ -181,8 +185,9 @@ class PhysicalLayer():
 		self.recThread.start()
 
 	def recv_end(self):
-		if self.recThread.isAlive():
-			self.recThread.stop()
+		# if self.recThread.isAlive():
+		# 	self.recThread.sleep()
+		self.terminate = 1
 
 	def send(self, frame):
 		
@@ -194,9 +199,9 @@ class PhysicalLayer():
 		time_final = time.time()
 		time_elapsed = time_final - time_initial
 		
-		while (True): #time_elapsed < self.max_wait
+		while (self.terminate == 0  ): #time_elapsed < self.max_wait
 			print("in receiver", self.event)
-			data = self.sock.recv(10)     #Buffer we want to receive is max of 1024 bytes 
+			data = self.sock.recv(44)     #Buffer we want to receive is max of 1024 bytes 
 			if (not data and self.event == 10) :
 				self.event = 5
 				break
@@ -215,7 +220,7 @@ class PhysicalLayer():
 
 			time_final = time.time()
 			time_elapsed = time_final - time_initial
-		self.event = 3
+		# self.event = 3
 		#Close the thread since timed out
 
 	def enable(self,):
