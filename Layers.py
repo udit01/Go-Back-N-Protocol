@@ -161,7 +161,7 @@ class PhysicalLayer():
 
 		self.buf = []
 		s = socket.socket()
-		self.max_wait = 10
+		self.max_wait = 2
 		self.event = 10
 		self.terminate = 0
 		
@@ -182,7 +182,7 @@ class PhysicalLayer():
 	def close(self):
 		self.terminate = 1
 		self.closeSocket()
-		time.sleep(5)
+		time.sleep(2)
 		sys.exit()
 		# KILL THE THREAD
 		# self.recThread.raise
@@ -191,6 +191,7 @@ class PhysicalLayer():
 
 
 	def closeSocket(self):
+		time.sleep(2)
 		self.sock.close()
 
 	# def wait_for_event():
@@ -222,7 +223,11 @@ class PhysicalLayer():
 		time_final = time.time()
 		time_elapsed = time_final - time_initial
 		
-		while (self.terminate == 0): #time_elapsed < self.max_wait
+		while (self.terminate == 0): #
+			if (time_elapsed > self.max_wait):
+				self.event = 3
+				print ("TIMEOUT CALLED")
+				break
 			print("in receiver", self.event)
 			try : 
 				data = self.sock.recv(44)
@@ -231,8 +236,9 @@ class PhysicalLayer():
 				self.close()
 				# BREAK OUTER LOOP
 				return
+			print ("Try successful")
 			#Buffer we want to receive is max of 1024 bytes 
-			if (data == b'' and self.event == 10) :
+			if (data == b''):# and self.event == 10) :
 				print("NOT DATA AND EVENT 10")
 				self.event = 5
 				self.close()

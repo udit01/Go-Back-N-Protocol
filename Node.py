@@ -104,8 +104,12 @@ class Node():
 			
 
 			print ("event_phys",event_phys)
-			if event_phys < 4:
-				n = event_phys
+			if event_phys < 4 :
+				if event_phys == 1:
+					if len(self.physicalLayer.buf) !=0:
+						n = 1
+				else:
+					n = event_phys
 				print ("event_phys" , n)
 			elif event_netw != -1:
 				n = event_netw
@@ -137,20 +141,24 @@ class Node():
 
 				#/* transmit the frame */
 				x = random.uniform(0,1)
-				# if (x>0.5):
-				self.send_data(next_frame_to_send.val ,frame_expected.val, buffer)
-				# else:
-				# 	print ("Not sending Frame: next_frame_to_send", next_frame_to_send.val )
-				# 	print ("Data skipped: ", buffer[next_frame_to_send.val])
+				if (x>0):
+					self.send_data(next_frame_to_send.val ,frame_expected.val, buffer)
+				else:
+					print ("Not sending Frame: next_frame_to_send", next_frame_to_send.val )
+					print ("Data skipped: ", buffer[next_frame_to_send.val])
 
 				# /* advance sender's upper window edge */
 				next_frame_to_send.inc()
 
 			elif n == 1 :
 				# /* a data or control frame has arrived */
-				print ("PhysicalLayer Buf", self.physicalLayer.buf)
-				fr = self.physicalLayer.buf[0]
-				self.physicalLayer.buf.pop(0)
+				print ("PhysicalLayer Buf", len(self.physicalLayer.buf))
+				try:
+					fr = self.physicalLayer.buf[0]
+					self.physicalLayer.buf.pop(0)
+				except:
+					continue
+
 				# /* get incoming frame from physical layer */
 				print("fr.seq", fr.seq)
 				print("frame_expected.val", frame_expected.val)
@@ -186,8 +194,12 @@ class Node():
 				#Need an empty frame -- and just add ack to it
 				#Entered the loop because packets to send are over
 				print ("PhysicalLayer Buf", self.physicalLayer.buf)
-				fr = self.physicalLayer.buf[0]
-				self.physicalLayer.buf.pop(0)
+				try:
+					fr = self.physicalLayer.buf[0]
+					self.physicalLayer.buf.pop(0)
+				except:
+					continue
+
 				# /* get incoming frame from physical layer */
 				if (fr.seq == frame_expected.val) :
 					# /* Frames are accepted only in order. */
