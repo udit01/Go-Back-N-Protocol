@@ -32,7 +32,9 @@ class NetworkLayer():
         self.packetsReceived = []
         self.infilepath = infilepath
         self.outfilepath = outfilepath
+        self.event = 0
         self.make_packet(self.infilepath)
+
         
     def enable(self):
         pass
@@ -43,6 +45,7 @@ class NetworkLayer():
         # if sending packets fin then send an end packet
         # ELSE SEND NORMAL PACKETS 
         if(self.nextPacketToSend >= self.dataSize) :
+            self.event = -1
             return Packet( "", 1)
             # Send a packet with "END" STRING OR A PACKET OF DIFFERENT TYPE
         p = self.packetsToSend[self.nextPacketToSend]
@@ -114,7 +117,7 @@ class PhysicalLayer():
     #         break
     #     print "from connected user: " + str(data)
     # sock.close()
-    
+
     def enable(self,):
         pass
     def disable(self):
