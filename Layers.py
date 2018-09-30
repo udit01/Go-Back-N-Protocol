@@ -99,12 +99,13 @@ class NetworkLayer():
 		self.outfilepath = outfilepath
 		self.event = 0
 		self.make_packets(self.infilepath)
+		self.active = False
 
 		
 	def enable(self):
-		pass
+		self.active = True
 	def disable(self):
-		pass
+		self.active = False
 	
 	# returns a packet to send
 	def get_packet(self):
@@ -254,7 +255,10 @@ class PhysicalLayer():
 				print("Size of Buf: ", len(self.buf))
 				time_initial = time.time() 
 				#Starting timer again after getting data
+				# if (self.event > 1 and self.event < ):
+				# 	self.event += 1
 				self.event = 1
+
 
 			time_final = time.time()
 			time_elapsed = time_final - time_initial
