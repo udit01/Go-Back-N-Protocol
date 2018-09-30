@@ -19,8 +19,13 @@ class Host():
 				outfilepath=os.path.join(os.getcwd(), "b.txt")):
 		# WWW is the data path
 		self.node = Node(ip=ip, port=port, infilepath=infilepath, outfilepath=outfilepath)
+		try: 
+			self.node.run()
+		except :
+			print("Connnection ended")
+			self.node.networkLayer.write_to_file()
 
-
+		print("END HAS COME")
 # if __name__ == "__main__":
 #     # Argument parser
 #     parser = argparse.ArgumentParser(description='Go-Back-N Protocol Server Application',

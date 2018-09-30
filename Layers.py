@@ -201,7 +201,14 @@ class PhysicalLayer():
 		
 		while (self.terminate == 0  ): #time_elapsed < self.max_wait
 			print("in receiver", self.event)
-			data = self.sock.recv(44)     #Buffer we want to receive is max of 1024 bytes 
+			try : 
+				data = self.sock.recv(44)
+			except : 
+				print("DATA didn't come")
+				# self.sock.close()
+				self.terminate = 1
+				return
+			#Buffer we want to receive is max of 1024 bytes 
 			if (not data and self.event == 10) :
 				self.event = 5
 				break

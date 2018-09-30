@@ -1,3 +1,10 @@
+B.txt
+Some other
+random
+things
+are put
+here
+hello
 AB
 EF
 IJ

@@ -51,6 +51,7 @@ class Node():
 		MAX_SEQ = windowSize
 		# Starts timer etc
 		
+	def run(self):
 		self.protocol5()
 
 	# def start_timer(self, frame_nr):
