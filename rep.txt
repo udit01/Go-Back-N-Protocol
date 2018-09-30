@@ -1,5 +1,12 @@
 introduction - 
+
 implementation - (pseudo code, piggybacking, ack size)
+    1st 1 sender and 1 recieiver, working fine, also working good with error propogation
+    <results : PRATYUSH>
+    duplex sender and recieiver 
+    full duplex working on parallel threads, 1 channel with/without piggyback 
+
+
 analysis, and observations <in env>
 3 X 3 X 3 table
 conclusion <fav and unfav params>
