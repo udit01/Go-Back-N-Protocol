@@ -6,6 +6,8 @@
 # typedef enum {frame arrival, cksum err, timeout, network layer ready} event type #
 
 from Layers import *
+import random
+
 
 MAX_SEQ = 3
 
@@ -134,7 +136,12 @@ class Node():
 				nbuffered.inc()
 
 				#/* transmit the frame */
+				x = random.uniform(0,1)
+				# if (x>0.5):
 				self.send_data(next_frame_to_send.val ,frame_expected.val, buffer)
+				# else:
+				# 	print ("Not sending Frame: next_frame_to_send", next_frame_to_send.val )
+				# 	print ("Data skipped: ", buffer[next_frame_to_send.val])
 
 				# /* advance sender's upper window edge */
 				next_frame_to_send.inc()
