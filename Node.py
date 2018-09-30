@@ -19,9 +19,9 @@ def between(a, b, c):
 class seq_nr():
 	def __init__(self, num):
 		self.val = num
-	def inc():
+	def inc(self):
 		self.val = self.val + 1
-	def dec():
+	def dec(self):
 		self.val = self.val - 1
 
 
@@ -63,13 +63,13 @@ class Node():
 		
 		packet = buffer[next_frame_to_send]
 		
-		s = Frame(packet, frame_nr,
+		s = Frame(packet, next_frame_to_send,
 				(frame_expected + self.MAX_SEQ) % (self.MAX_SEQ + 1) 
 				)
 				#/* piggyback ack */
 		
 		self.physicalLayer.send(s) # /* transmit the frame */
-		self.start_timer(frame_nr) #/* start the timer running */
+		# self.start_timer(next_frame_to_send) #/* start the timer running */
 
 
 	def protocol5(self) :

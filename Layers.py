@@ -92,7 +92,7 @@ class PhysicalLayer():
 		self.buf = []
 		s = socket.socket()
 		self.max_wait = 10
-		self.event = -1
+		self.event = 10
 		
 		try : 
 			s.bind((ip, port))
@@ -127,7 +127,7 @@ class PhysicalLayer():
 	def send(self, frame):
 		
 		print ("Sending: " + str(frame))
-		self.sock.send(frame)
+		self.sock.send(frame.serialize())
 
 	def recv(self, name):
 		time_initial = time.time()
@@ -141,7 +141,8 @@ class PhysicalLayer():
 				break
 			else : 
 				self.event = 1
-				self.buf.append(data)
+				f = Frame()
+				self.buf.append(f.deserialize(data))
 			time_final = time.time()
 			time_elapsed = time_final - time_initial
 		self.event = 4
