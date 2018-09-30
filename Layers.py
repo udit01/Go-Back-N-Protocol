@@ -24,7 +24,21 @@ class Frame(Packet):
 		self.seq = seq
 		# Number of packet to send next
 		self.ack = ack
+    def serialize(self):
+        st = str(self.seq)
+        st += ";"
+        st += self.info
+        st += ";"
+        st += str(self.ack)
+        st += ";"
 
+        return st
+
+    def deserialize(self, str):
+        l = str.split(';')
+        self.seq = int(l[0])
+        self.info = l[1]
+        self.ack = int(l[2])
 
 
 class NetworkLayer():
