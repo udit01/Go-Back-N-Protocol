@@ -30,14 +30,14 @@ class Frame():
 	def serialize(self):
 
 		# 44 byte sized packet
-		st = str(self.seq).ljust(4)
+		st = str(self.seq).ljust(4)[:4]
 		# st = f'{str(self.seq): <4}'
 		st += ";"
-		st += str(self.info).ljust(28)
+		st += str(self.info).ljust(28)[:28]
 		st += ";"
-		st += str(self.ack).ljust(4)
+		st += str(self.ack).ljust(4)[:4]
 		st += ";"
-		st += str(self.type).ljust(4)
+		st += str(self.type).ljust(4)[:4]
 		st += ";"
 		# st.encode()
 		return st.encode()
@@ -101,7 +101,7 @@ class NetworkLayer():
 		# ELSE SEND NORMAL PACKETS 
 		if(self.nextPacketToSend >= self.dataSize) :
 			self.event = -1
-			return Packet( "", 1)
+			return Packet("", 1)
 			# Send a packet with "END" STRING OR A PACKET OF DIFFERENT TYPE
 		p = self.packetsToSend[self.nextPacketToSend]
 		self.nextPacketToSend += 1
@@ -207,6 +207,8 @@ class PhysicalLayer():
 				print("DATA didn't come")
 				# self.sock.close()
 				self.terminate = 1
+				self.sock.close()
+				# BREAK OUTER LOOP
 				return
 			#Buffer we want to receive is max of 1024 bytes 
 			if (not data and self.event == 10) :
