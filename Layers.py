@@ -34,7 +34,9 @@ class NetworkLayer():
         self.packetsReceived = []
         self.infilepath = infilepath
         self.outfilepath = outfilepath
+        self.event = 0
         self.make_packet(self.infilepath)
+
         
     def enable(self):
         pass
@@ -45,6 +47,7 @@ class NetworkLayer():
         # if sending packets fin then send an end packet
         # ELSE SEND NORMAL PACKETS 
         if(self.nextPacketToSend >= self.dataSize) :
+            self.event = -1
             return Packet( "", 1)
             # Send a packet with "END" STRING OR A PACKET OF DIFFERENT TYPE
         p = self.packetsToSend[self.nextPacketToSend]
@@ -142,9 +145,7 @@ class PhysicalLayer():
             time_elapsed = time_final - time_initial
         self.event = 4
         #Close the thread since timed out
-        
 
-    
     def enable(self,):
         pass
     def disable(self):

@@ -3,25 +3,21 @@
 import os
 import sys
 import socket
-from threading import Thread
+# from threading import Thread
 from Node import *
 
-class Host(Thread):
+class Host():
     """
     HOST running Go-Back-N protocol for reliable data transfer.
     Both sender and receiever
     """
-
     def __init__(self,
                 ip="127.0.0.1",
                 port=3000,
-                sequenceNumberBits=2,
-                www=os.path.join(os.getcwd(), "data", "test.txt"),
-                outfilepath=os.path.join(os.getcwd(), "data", "recv.txt")):
-        self.sequenceNumberBits = sequenceNumberBits
+                infilepath=os.path.join(os.getcwd(), "a.txt"),
+                outfilepath=os.path.join(os.getcwd(), "b.txt")):
         # WWW is the data path
-        self.node = Node(ip, port, infilepath=www, outfilepath=outfilepath)
-
+        self.node = Node(ip, port, infilepath=infilepath, outfilepath=outfilepath)
 
 
 # if __name__ == "__main__":
@@ -67,38 +63,42 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Go-Back-N Protocol Client Application',
                                      prog='python \
                                            ClientApp.py \
-                                           -f <filename> \
+                                           -if <in_filename> \
+                                           -of <out_filename> \
                                            -i <ip> \
-                                           -p <port> \
-                                           -m <sequence_number_bits> \
-                                           -w <window_size> \
-                                           -s <max_segment_size> \
-                                           -n <total_packets> \
-                                           -t <timeout> \
-                                           -d <www>')
+                                           -p <port>)
+                                        #     \
+                                        #    -w <window_size> \
+                                        #    -s <max_segment_size> \
+                                        #    -n <total_packets> \
+                                        #    -t <timeout> \
+                                        #    -d <www>')
 
-    parser.add_argument("-f", "--filename", type=str, default="index.html",
-                        help="File to be sent, default: index.html")
-    parser.add_argument("-i", "--ip", type=str, default="127.0.0.1",
+    parser.add_argument("-if", "--ifilename", type=str, default="a.txt", dest='if'
+                        help="File to be sent, default: a.txt")
+    parser.add_argument("-of", "--ofilename", type=str, default="b.txt", dest='if'
+                        help="File to be sent, default: b.txt")
+    
+    parser.add_argument("-i", "--ip", type=str, default="127.0.0.1", dest='i'
                         help="IP, default: 127.0.0.1")
-    parser.add_argument("-p", "--port", type=int, default=8081,
-                        help="Port, default: 8081")
+    parser.add_argument("-p", "--port", type=int, default=5000, dest='f'
+                        help="Port, default: 5000")
 
-    parser.add_argument("-m", "--sequence_number_bits", type=int, default=2,
-                        help="Total number of bits used in sequence numbers, default: 2")
-    parser.add_argument("-w", "--window_size", type=int, default=3,
-                        help="Window size, default: 3")
-    parser.add_argument("-s", "--max_segment_size", type=int, default=1500,
-                        help="Maximum segment size, default: 1500")
-    parser.add_argument("-n", "--total_packets", type=str, default="ALL",
-                        help="Total packets to be transmitted, default: ALL")
-    parser.add_argument("-t", "--timeout", type=int, default=10,
-                        help="Timeout, default: 10")
-    parser.add_argument("-d", "--www", type=str, default=os.path.join(os.getcwd(), "data", "sender"),
-                        help="Source folder for transmission, default: /<Current Working Directory>/data/sender/")
+    # parser.add_argument("-m", "--sequence_number_bits", type=int, default=2,
+    #                     help="Total number of bits used in sequence numbers, default: 2")
+    # parser.add_argument("-w", "--window_size", type=int, default=3,
+    #                     help="Window size, default: 3")
+    # parser.add_argument("-s", "--max_segment_size", type=int, default=1500,
+    #                     help="Maximum segment size, default: 1500")
+    # parser.add_argument("-n", "--total_packets", type=str, default="ALL",
+    #                     help="Total packets to be transmitted, default: ALL")
+    # parser.add_argument("-t", "--timeout", type=int, default=10,
+    #                     help="Timeout, default: 10")
+    # parser.add_argument("-d", "--www", type=str, default=os.path.join(os.getcwd(), "data", "sender"),
+    #                     help="Source folder for transmission, default: /<Current Working Directory>/data/sender/")
 
     # Read user inputs
     args = vars(parser.parse_args())
 
     # Run Client Application
-    ClientApp(**args)
+    Host(args.i, args.p, args.)
