@@ -6,8 +6,6 @@ will be used
 not more 
 than 27char
 and 1 is whitespace
-
-
 PQ
 RS
 TU
