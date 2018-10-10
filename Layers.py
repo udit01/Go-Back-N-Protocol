@@ -60,13 +60,13 @@ class Frame():
 		
 		empty = '    '
 		
-		print("Decerializing l: ", l)
+		# print("Decerializing l: ", l)
 		
 		# because paddind with whitespaces
 		if (l[0] == empty):
 			self.seq = -1
 		else:
-			print("L0-----", l[0])
+			# print("L0-----", l[0])
 			self.seq = int(l[0])
 
 		self.info = l[1].rstrip(' ')
@@ -124,7 +124,7 @@ class NetworkLayer():
 	def write_to_file(self, filepath = "default.txt"):
 		
 		strings = [packet.info for packet in self.packetsReceived]
-		print("Writing to File", strings)
+		# print("Writing to File", strings)
 		data = "".join(strings)
 
 		with open(filepath, 'w') as outfile:
@@ -135,7 +135,7 @@ class NetworkLayer():
 	# def to_network_layer(self, info):
 	def to_network_layer(self, data, type):
 
-		print("IN network layer , got packet of type : ", type)
+		# print("IN network layer , got packet of type : ", type)
 				
 		# if last packet then , call the write file function 
 		if type == 1 : 
@@ -170,11 +170,11 @@ class PhysicalLayer():
 			s.bind((ip, port))
 			s.listen(1)
 			self.sock, addr = s.accept()
-			print("Server made on", ip, port)
+			# print("Server made on", ip, port)
 		except Exception:
 			s.connect((ip, port))
 			self.sock = s
-			print("Client made on", ip, port)
+			# print("Client made on", ip, port)
 		
 		# self.sendingThread = threading.Thread(target=self.send, args=("Physical Layer's Sending thread"))
 		self.recThread = threading.Thread(target=self.receive, args=("Physical Layer's Receiving thread",))
@@ -216,7 +216,8 @@ class PhysicalLayer():
 
 	def send(self, frame):
 		
-		print ("Sending: " + str(frame))
+		# time.sleep(0.5)
+		# print ("Sending: " + str(frame))
 		self.sock.send(frame.serialize())
 
 	def receive(self, name):
@@ -227,32 +228,32 @@ class PhysicalLayer():
 		while (self.terminate == 0): #
 			if (time_elapsed > self.max_wait):
 				self.event = 3
-				print ("TIMEOUT CALLED")
+				# print ("TIMEOUT CALLED")
 				break
-			print("in receiver", self.event)
+			# print("in receiver", self.event)
 			try : 
 				data = self.sock.recv(44)
 			except : 
-				print("DATA didn't come")
+				# print("DATA didn't come")
 				self.close()
 				# BREAK OUTER LOOP
 				return
-			print ("Try successful")
+			# print ("Try successful")
 			#Buffer we want to receive is max of 1024 bytes 
 			if (data == b''):# and self.event == 10) :
-				print("NOT DATA AND EVENT 10")
+				# print("NOT DATA AND EVENT 10")
 				self.event = 5
 				self.close()
 				# break
 			else : 
 				
 				f = Frame()
-				print ("Data receieved in Physical layer's receive function : ", data)
+				# print ("Data receieved in Physical layer's receive function : ", data)
 				f.deserialize(data)
 				self.buf.append(f)
-				print("Info of deserialized data : ", f.info)
-				print("Type of deserialized data : ", f.type)
-				print("Size of Buf: ", len(self.buf))
+				# print("Info of deserialized data : ", f.info)
+				# print("Type of deserialized data : ", f.type)
+				# print("Size of Buf: ", len(self.buf))
 				time_initial = time.time() 
 				self.event = 1
 
