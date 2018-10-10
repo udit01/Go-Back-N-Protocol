@@ -12,7 +12,7 @@ import random
 MAX_SEQ = 3
 
 def between(a, b, c):
-	print ("BETWEEN FUNCTION CALLED")
+	# print ("BETWEEN FUNCTION CALLED")
 	# /* Return true if a <= b < c circularly # false otherwise. */
 	if (((a <= b) and (b < c)) or ((c < a) and (a <= b)) or ((b < c) and (c < a))):
 		return True
@@ -92,7 +92,7 @@ class Node():
 		self.physicalLayer.start()
 
 		while (True):
-			print("Ack_expected", ack_expected.val, "n_buffered", nbuffered.val)
+			# print("Ack_expected", ack_expected.val, "n_buffered", nbuffered.val)
 			
 			# Event is a number from 0 to 3
 			event_netw = self.networkLayer.event
@@ -102,29 +102,29 @@ class Node():
 			# /* four possibilities: see event type above */
 			
 
-			print ("event_phys",event_phys, "event_netw", event_netw, "len phys buf", len(self.physicalLayer.buf))
+			# print ("event_phys",event_phys, "event_netw", event_netw, "len phys buf", len(self.physicalLayer.buf))
 			if event_phys < 4 :
 				if event_phys == 1:
 					if len(self.physicalLayer.buf) !=0:
 						n = 1
 				else:
 					n = event_phys
-				print ("event_phys" , n)
+				# print ("event_phys" , n)
 			elif event_netw != -1 and self.networkLayer.active:
 				n = event_netw	
-				print ("event_netw" , n)
+				# print ("event_netw" , n)
 			elif event_netw == -1 and len(self.physicalLayer.buf) !=0:
 				n = 4 #In this case start sending empty packets whenever required by n
-				print ("event_netw" , n)
+				# print ("event_netw" , n)
 			elif not self.networkLayer.active and len(self.physicalLayer.buf) !=0:
 				n = 4 #In this case start sending empty packets whenever required by n
-				print ("event_netw" , n)
+				# print ("event_netw" , n)
 			elif event_netw == -1 and self.physicalLayer.terminate == 1 :
 				self.physicalLayer.close()
-				print("Breaking")
+				# print("Breaking")
 				break
 			else :
-				print ("CONTINUE")
+				# print ("CONTINUE")
 				continue
 
 
@@ -147,24 +147,24 @@ class Node():
 				if (x>0):
 					self.send_data(next_frame_to_send.val ,frame_expected.val, buffer)
 				else:
-					print ("Not sending Frame: next_frame_to_send", next_frame_to_send.val )
-					print ("Data skipped: ", buffer[next_frame_to_send.val])
+					# print ("Not sending Frame: next_frame_to_send", next_frame_to_send.val )
+					# print ("Data skipped: ", buffer[next_frame_to_send.val])
 
 				# /* advance sender's upper window edge */
 				next_frame_to_send.inc()
 
 			elif n == 1 :
 				# /* a data or control frame has arrived */
-				print ("PhysicalLayer Buf", len(self.physicalLayer.buf))
+				# print ("PhysicalLayer Buf", len(self.physicalLayer.buf))
 				try:
 					fr = self.physicalLayer.buf[0]
 					self.physicalLayer.buf.pop(0)
 				except:
 					continue
-				print ("Afterwards PhysicalLayer Buf", len(self.physicalLayer.buf))
+				# print ("Afterwards PhysicalLayer Buf", len(self.physicalLayer.buf))
 				# /* get incoming frame from physical layer */
-				print("fr.seq", fr.seq)
-				print("frame_expected.val", frame_expected.val)
+				# print("fr.seq", fr.seq)
+				# print("frame_expected.val", frame_expected.val)
 				if (fr.seq == frame_expected.val) :
 					# /* Frames are accepted only in order. */
 
@@ -181,7 +181,7 @@ class Node():
 					frame_expected.inc()
 					
 					# /* Ack n implies n-1, n-2, etc. Check for this. */
-					print ("Between Fun: Ack_expected= ", ack_expected.val, "fr.ack = ", fr.ack, "next_frame_to_send.val = ", next_frame_to_send.val )
+					# print ("Between Fun: Ack_expected= ", ack_expected.val, "fr.ack = ", fr.ack, "next_frame_to_send.val = ", next_frame_to_send.val )
 					while (between(ack_expected.val, fr.ack, next_frame_to_send.val)):
 						# /* Handle piggybacked ack. */
 						# nbuffered = nbuffered-1 # /* one frame fewer buffered */
@@ -197,7 +197,7 @@ class Node():
 			elif n == 4 :
 				#Need an empty frame -- and just add ack to it
 				#Entered the loop because packets to send are over
-				print ("PhysicalLayer Buf", self.physicalLayer.buf)
+				# print ("PhysicalLayer Buf", self.physicalLayer.buf)
 				try:
 
 					fr = self.physicalLayer.buf[0]
@@ -268,7 +268,7 @@ class Node():
 					next_frame_to_send.inc()
 					# /* prepare to send the next one */
 			else : 
-				print("outside precribed event type ")
+				# print("outside precribed event type ")
 
 			if (nbuffered.val < MAX_SEQ ):
 				self.networkLayer.enable()
