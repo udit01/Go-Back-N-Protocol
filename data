@@ -1,0 +1,26 @@
+Throughput vs Window size 
+
+Window size with chaning delay
+
+
+
+Drop rate = 0
+Throughput(0,3,5)(How slope changing and argue) , Latency(0,3,5)  (For diff delay)  vs Window size
+
+Drop rate = 5
+
+Drop rate = 10
+     
+
+
+    Error Probability	Delay	Window Size	Packets Transmitted	Throughput (Kbps)	Latency (ms)
+                        
+    0	0	5	7288	98.56	10.21
+        0	7	7360	136.24	7.43
+        0	9	7360	162.48	5.81
+        3	5	7256	96.48	10.42
+        3	7	7286	137.88	7.45
+        3	9	7302	163.25	5.87
+        5	5	7198	95.68	10.56
+        5	7	7254	138.32	7.48
+        5	9	7280	164.54	5.95
