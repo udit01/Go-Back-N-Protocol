@@ -9,7 +9,7 @@ from Layers import *
 import random
 
 
-MAX_SEQ = 4
+MAX_SEQ = 3
 
 def between(a, b, c):
 	# print ("BETWEEN FUNCTION CALLED")

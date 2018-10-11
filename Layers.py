@@ -42,6 +42,9 @@ class Frame():
 	def serialize(self):
 
 		# 44 byte sized packet
+
+		print("SERIALIZED__: Num: ",self.seq, " : info: ", self.info.rstrip().ljust(20), " : Ack Expected:", self.ack )
+
 		st = str(self.seq).ljust(4)[:4]
 		# st = f'{str(self.seq): <4}'
 		st += ";"
@@ -83,6 +86,7 @@ class Frame():
 		else :
 			self.type = int(l[3])
 			
+		print("DESERIALIZED: Num: ",self.seq, " : info: ", self.info.rstrip().ljust(20), " : Ack Expected:", self.ack )
 		
 		# if (len(l) > 4 ):
 		# 	if (l[4] == ''):
